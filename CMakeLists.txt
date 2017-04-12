@@ -7,6 +7,7 @@ project(drawbot)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   rospy
+  roscpp
   sensor_msgs
   std_msgs
 )
@@ -101,10 +102,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES drawbot
-#  CATKIN_DEPENDS geometry_msgs rospy sensor_msgs std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES drawbot
+  CATKIN_DEPENDS geometry_msgs rospy roscpp sensor_msgs std_msgs
+  DEPENDS system_lib
 )
 
 ###########
@@ -139,6 +140,12 @@ include_directories(
 # target_link_libraries(drawbot_node
 #   ${catkin_LIBRARIES}
 # )
+
+add_library(upd include/UdpServer.cpp)
+
+add_executable(pen src/Pen.cpp)
+target_link_libraries(pen ${catkin_LIBRARIES} upd)
+add_dependencies(pen beginner_tutorials_generate_messages_cpp)
 
 #############
 ## Install ##
