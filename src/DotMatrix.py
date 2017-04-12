@@ -9,21 +9,26 @@ import rospy
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point, Vector3
 from std_msgs.msg import Header, ColorRGBA
+import cv2
 
 
-class ImageVisualizer(smach.State):
+class DotMatrix(object):
 
-    def __init__(self, outcomes=['Done']):
-        super(ImageVisualizer, self).__init__(outcomes=outcomes)
-
-        self.dots_msg_sent = False
-
+    def __init__(self, path):
+        super(DotMatrix, self).__init__()
+        self.IMAGE_PATH = path
         self.publisher = rospy.Publisher('/dots', Marker, queue_size=10)
-        rospy.Subscriber('/dots', Marker, self.get_dots_msg)
 
-    def get_dots_msg(self, msg):
-        if not self.dots_msg_sent:
-            self.dots_msg_sent = True
+    def preprocess(self, image_path, final_size):
+        """Takes in an image path, and returns a processed numpy array."""
+        image = cv2.imread(image_path, 1)
+        resized_image = cv2.resize(image, final_size)
+        image_gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+        ret , binary_image= cv2.threshold(image_gray,127,255,cv2.THRESH_BINARY)
+        # binary_image = cv2.adaptiveThreshold(image_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+        #             cv2.THRESH_BINARY,11,2)
+        return binary_image
+
 
     def scale(self, coords, (x_scale, y_scale)):
         """Scale an array of coordinates so that it's maximum is x_scale, yscale"""
@@ -54,20 +59,19 @@ class ImageVisualizer(smach.State):
         )
         return marker
 
-    def execute(self, userdata):
-        return self.run()
+    def publish_visualization(self):
+        bw_image = self.preprocess(self.IMAGE_PATH, (20, 20))
+        points = self.generate_points(bw_image, (3,2))
+        self.publisher.publish(points)
 
     def run(self):
         r = rospy.Rate(50)
-        image = np.ones((5,5))
 
-        # Keep sending message until it is sent successfully.
-        while not rospy.is_shutdown(): #and not self.dots_msg_sent:
-            points = self.generate_points(image, (3,4))
-            self.publisher.publish(points)
-
-        return 'Done'
+        while not rospy.is_shutdown():
+            self.publish_visualization()
+            
 
 if __name__ == '__main__':
-    rospy.init_node('ImageVisualizer')
-    ImageVisualizer().run()
+    rospy.init_node('DotMatrix')
+    DotMatrix(path='../images/heart.jpg').run()
+
