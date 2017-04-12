@@ -60,7 +60,7 @@ class DotMatrix(object):
         return marker
 
     def publish_visualization(self):
-        bw_image = self.preprocess(self.IMAGE_PATH, (30, 30))
+        bw_image = self.preprocess(self.IMAGE_PATH, (20, 20))
         points = self.generate_points(bw_image, (3,2))
         self.publisher.publish(points)
 
