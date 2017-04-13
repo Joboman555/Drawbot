@@ -12,10 +12,11 @@ int main(int argc, char** argv){
 		ROS_FATAL("Host not set");
 		return 1;
 	}
-	char *host = new char[address.length() + 1];
+	char host[address.length()];
 	strcpy(host, address.c_str());
 
 	serv = new UdpServer(host, 31415);
+	std::cout << serv->setUp();
 	ros::spin();
 	return 0;
 }
