@@ -7,6 +7,7 @@ import smach_ros
 from GoForward import GoForward
 from Turn import Turn
 from Sleep import Sleep
+from Draw import Draw
 
 def main():
     rospy.init_node('DotDrawer')
@@ -19,7 +20,7 @@ def main():
             GoForward(),
             transitions={ 
             # define the transitions that GoForward can go through to other states
-                'Completed_Successfully': 'Sleep',
+                'Completed_Successfully': 'Draw',
                 'Aborted': 'give_up'
             }
         )
@@ -27,6 +28,15 @@ def main():
         smach.StateMachine.add(
             'Sleep',
             Sleep(),
+            transitions={
+                'Completed_Successfully': 'Go Forward',
+                'Aborted': 'give_up'
+            }
+        )
+
+        smach.StateMachine.add(
+            'Draw',
+            Draw(),
             transitions={
                 'Completed_Successfully': 'Go Forward',
                 'Aborted': 'give_up'
