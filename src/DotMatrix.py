@@ -1,10 +1,9 @@
 #!/usr/bin/env python2
 
-"""Displays an image visualization to rviz."""
+"""Takes an image and makes it into a dot matrix, publishes visualization."""
 
 from __future__ import division
 import numpy as np
-import smach
 import rospy
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point, Vector3
@@ -69,9 +68,13 @@ class DotMatrix(object):
 
         while not rospy.is_shutdown():
             self.publish_visualization()
-            
+
+
+      
 
 if __name__ == '__main__':
     rospy.init_node('DotMatrix')
     DotMatrix(path='../images/heart.jpg').run()
+
+
 
