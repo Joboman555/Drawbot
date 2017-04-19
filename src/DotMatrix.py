@@ -1,51 +1,35 @@
 #!/usr/bin/env python2
 
-"""Takes an image and makes it into a dot matrix, publishes visualization."""
+"""Published a visualization of the neato's to rviz"""
 
 from __future__ import division
-import numpy as np
 import rospy
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Point, Vector3
+from geometry_msgs.msg import Vector3, Pose
 from std_msgs.msg import Header, ColorRGBA
-import cv2
+from drawbot.srv import GetWaypoints
+
 
 
 class DotMatrix(object):
 
-    def __init__(self, path):
+    def __init__(self):
         super(DotMatrix, self).__init__()
-        self.IMAGE_PATH = path
         self.publisher = rospy.Publisher('/dots', Marker, queue_size=10)
+        rospy.wait_for_service('get_waypoints')
+        self.waypoints = self.get_waypoints_from_server(Pose())
+        print self.waypoints
 
-    def preprocess(self, image_path, final_size):
-        """Takes in an image path, and returns a processed numpy array."""
-        image = cv2.imread(image_path, 1)
-        resized_image = cv2.resize(image, final_size)
-        image_gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
-        ret , binary_image= cv2.threshold(image_gray,127,255,cv2.THRESH_BINARY)
-        # binary_image = cv2.adaptiveThreshold(image_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
-        #             cv2.THRESH_BINARY,11,2)
-        return binary_image
+    def get_waypoints_from_server(self, pose):
+        try:
+            get_waypoints = rospy.ServiceProxy('get_waypoints', GetWaypoints)
+            response = get_waypoints()
+            return response.points
+        except rospy.ServiceException, e:
+            print "Service call failed %s" % e
 
-
-    def scale(self, coords, (x_scale, y_scale)):
-        """Scale an array of coordinates so that it's maximum is x_scale, yscale"""
-        maxs = np.amax(coords, axis=0)
-        scaled = coords * np.array([x_scale, y_scale]) / maxs
-        return scaled
-
-    def generate_points(self, binary_image, (x_scale, y_scale)):
-        # Finds coordinates where the image is not 0
-        x_y_coords = np.argwhere(binary_image).astype(float)
-        scaled_x_y_coords = self.scale(x_y_coords, (x_scale, y_scale))
-        zs = np.zeros((x_y_coords.shape[0], 1))
-        # We need to append x, y, and zs together
-        points_coords = np.hstack((scaled_x_y_coords, zs))
-        points = []
-        for row in points_coords:
-            point = Point(x=row[0], y=row[1], z=row[2])
-            points.append(point)
+   
+    def generate_markers(self, points):
         marker = Marker(
             type=Marker.POINTS,
             header=Header(
@@ -59,22 +43,17 @@ class DotMatrix(object):
         return marker
 
     def publish_visualization(self):
-        bw_image = self.preprocess(self.IMAGE_PATH, (20, 20))
-        points = self.generate_points(bw_image, (3,2))
-        self.publisher.publish(points)
+        markers = self.generate_markers(self.waypoints)
+        self.publisher.publish(markers)
 
     def run(self):
         r = rospy.Rate(50)
-
         while not rospy.is_shutdown():
             self.publish_visualization()
 
-
-      
-
 if __name__ == '__main__':
     rospy.init_node('DotMatrix')
-    DotMatrix(path='../images/heart.jpg').run()
+    DotMatrix().run()
 
 
 

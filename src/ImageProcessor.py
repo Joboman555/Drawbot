@@ -2,10 +2,12 @@
 
 """Takes an image path and a pose, returns waypoints for the neato to draw."""
 
+from __future__ import division
 import rospy
 import cv2
-from geometry_msgs.msg import Point32
-from drawbot.srv import GetWaypoints
+from geometry_msgs.msg import Point
+from drawbot.srv import GetWaypoints, GetWaypointsResponse
+import numpy as np
 
 
 class ImageProcessor(object):
@@ -28,9 +30,29 @@ class ImageProcessor(object):
         #             cv2.THRESH_BINARY,11,2)
         return binary_image
 
+
+    def scale(self, coords, (x_scale, y_scale)):
+        """Scale an array of coordinates so that it's maximum is x_scale, yscale"""
+        maxs = np.amax(coords, axis=0)
+        scaled = coords * np.array([x_scale, y_scale]) / maxs
+        return scaled
+
+    def generate_points(self, binary_image, (x_scale, y_scale)):
+        # Finds coordinates where the image is not 0
+        x_y_coords = np.argwhere(binary_image).astype(float)
+        scaled_x_y_coords = self.scale(x_y_coords, (x_scale, y_scale))
+        zs = np.zeros((x_y_coords.shape[0], 1))
+        # We need to append x, y, and zs together
+        points_coords = np.hstack((scaled_x_y_coords, zs))
+        points = []
+        for row in points_coords:
+            point = Point(x=row[0], y=row[1], z=row[2])
+            points.append(point)
+        return points
+
     def handle_get_waypoints(self, req):
         print "Got request for position [%s]" % (req.neatoPosition)
-        points = []
+        points = self.generate_points(self.IMAGE, (3,3))
         return GetWaypointsResponse(points)
 
 if __name__ == '__main__':
