@@ -1,0 +1,10 @@
+<launch>
+  <!-- ImageProcessor server -->
+  <arg name="path"/>
+  <node name="ImageProcessor" pkg="drawbot" type="ImageProcessor.py" args="$(find drawbot)/$(arg path)" output="screen"/>
+
+  <!-- Visualization -->
+ <node name="DotMatrix" pkg="drawbot" type="DotMatrix.py" />
+
+
+</launch>

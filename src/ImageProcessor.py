@@ -8,6 +8,7 @@ import cv2
 from geometry_msgs.msg import Point
 from drawbot.srv import GetWaypoints, GetWaypointsResponse
 import numpy as np
+import sys
 
 
 class ImageProcessor(object):
@@ -52,10 +53,15 @@ class ImageProcessor(object):
 
     def handle_get_waypoints(self, req):
         print "Got request for position [%s]" % (req.neatoPosition)
-        points = self.generate_points(self.IMAGE, (3,3))
+        points = self.generate_points(self.IMAGE, (4,3))
         return GetWaypointsResponse(points)
 
 if __name__ == '__main__':
-    path = '../images/heart.jpg'
-    ImageProcessor(path)
+    if len(sys.argv) <= 1:
+        # We didn't get a path passed in
+        print 'ERROR: Must pass in a path variable!'
+    else:
+        path = sys.argv[1]
+        print path
+        ImageProcessor(path)
 
