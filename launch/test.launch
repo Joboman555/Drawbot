@@ -4,7 +4,7 @@
   <node name="ImageProcessor" pkg="drawbot" type="ImageProcessor.py" args="$(find drawbot)/$(arg path)" output="screen"/>
 
   <!-- Visualization -->
- <node name="DotMatrix" pkg="drawbot" type="DotMatrix.py" />
+ <node name="DotVisualizer" pkg="drawbot" type="DotVisualizer.py" />
 
 
 </launch>
