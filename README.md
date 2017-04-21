@@ -14,6 +14,7 @@ Good visualizations have been really important so far in developing and debuggin
 The above image shows the input image, in our case a heart, and the output that rviz sees. In the future, the Dot Visualizer will also get information back from the main running code to show more information, such as what dot is currently being navigated to.
 
 ## Pen Node
+The pen node takes in a byte message that corresponds to the angle of the servo connected to the pen. It sends the message to a udp server that is running on the raspberry pi. The raspberry pi then sends that byte to the arduino over serial.
 
 ## Our First Test
 
