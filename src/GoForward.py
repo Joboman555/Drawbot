@@ -61,7 +61,6 @@ class GoForward(smach.State):
             self.starting_position = np.array([pos.x, pos.y, pos.z])
         current_pos = msg.pose.pose.position
         self.position = np.array([current_pos.x, current_pos.y, current_pos.z])
-        print 'Got Odom'
         if not self.got_first_odom_msg:
             self.got_first_odom_msg = True
 
@@ -77,7 +76,7 @@ class GoForward(smach.State):
 
         while not rospy.is_shutdown() and self.got_first_odom_msg and not self.stopped:
             distance_from_goal = distance - self.distance_to(move_starting_position)
-            print distance_from_goal
+            print 'Distance to goal: ', str(distance_from_goal)
             if distance_from_goal > 0.001:
                 fwd_msg = Twist(linear=Vector3(distance_from_goal, 0.0, 0.0))
                 self.publisher.publish(fwd_msg)
