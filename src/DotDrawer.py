@@ -8,6 +8,7 @@ from smach import Sequence
 from geometry_msgs.msg import Pose, Point
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
+from operator import sub
 
 class DotDrawer(object):
     def __init__(self):
@@ -40,6 +41,15 @@ class DotDrawer(object):
             row = row + 1
         return point_rows
 
+    def abs_to_rel(self, abs_dists):
+        """ Convert a list of absolute distance to a list of relative distances.
+            Ex: abs_to_rel([0, 1, 2, 3, 4]) == [0, 1, 1].
+        """
+        diff = [0] + abs_dists[0:-1]
+        rel_dists = map(sub, abs_dists, diff)
+        return rel_dists
+
+
     def draw_points(self, waypoints):
         """ Draws the given waypoints.
             waypoints : a list of point objects with x, y, and z fields.
@@ -50,7 +60,8 @@ class DotDrawer(object):
         with sq:
             for i, row in enumerate(rows):
                 print 'Added row ' + str(i) + ' to State Machine'
-                dists_in_front = [point.y for point in row]            
+                abs_dists_in_front = [point.y for point in row]
+                dists_in_front = self.abs_to_rel(abs_dists_in_front)       
                 Sequence.add(
                     'Draw Row %d' % i,
                     DrawRow(dists_in_front),
