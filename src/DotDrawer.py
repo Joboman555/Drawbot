@@ -9,11 +9,12 @@ from Turn import Turn
 from Sleep import Sleep
 from geometry_msgs.msg import Pose
 from drawbot.srv import GetWaypoints
-
+from DrawRow import DrawRow
 
 class DotDrawer(object):
     def __init__(self):
         super(DotDrawer, self).__init__()
+        rospy.init_node('DotDrawer')
         rospy.wait_for_service('get_waypoints')
         self.waypoints = self.get_waypoints_from_server(Pose())
         print self.waypoints[0]
@@ -28,33 +29,24 @@ class DotDrawer(object):
 
 
     def run(self):
-        rospy.init_node('DotDrawer')
+
 
         # create a smach state machine
         sm = smach.StateMachine(outcomes=['give_up'])
-        sm.userdata.dist_in_front = 1
+        sm.userdata.dists_in_front = [1.0, 1.0]
         with sm:
             smach.StateMachine.add(
-                'Go Forward',
-                GoForward(),
+                'Draw Row',
+                DrawRow(),
                 transitions={ 
                 # define the transitions that GoForward can go through to other states
-                    'Completed_Successfully': 'Sleep',
-                    'Aborted': 'give_up'
-                }
-            )
-
-            smach.StateMachine.add(
-                'Sleep',
-                Sleep(),
-                transitions={
-                    'Completed_Successfully': 'Go Forward',
+                    'Completed_Successfully': 'Draw Row',
                     'Aborted': 'give_up'
                 }
             )
 
         # start the state machine
-        outcome = sm.execute()
+        return sm.execute()
 
 
 if __name__ == '__main__':
