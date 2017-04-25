@@ -32,7 +32,7 @@ class CarriageReturn(smach.State):
             )
             # Turn again
             Sequence.add(
-                'Turn 2', Turn(math.pi/2), transitions={'Aborted': 'Aborted'}
+                'Turn 2', Turn(-1 * math.pi/2), transitions={'Aborted': 'Aborted'}
             )
         # start the state machine
         return sq.execute()

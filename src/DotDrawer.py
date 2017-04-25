@@ -8,6 +8,7 @@ from smach import Sequence
 from geometry_msgs.msg import Pose, Point
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
+from GoForward import GoForward
 from CarriageReturn import CarriageReturn
 from operator import sub
 
@@ -60,8 +61,12 @@ class DotDrawer(object):
                       connector_outcome='Completed_Successfully')
         
         list_of_rows = []
+        # How far did we travel?
+        dists_back = []
         for row in rows:
             abs_dists_in_front = [point.y for point in row]
+            # Keep track of the farthest distance traveled
+            dists_back.append(abs_dists_in_front[-1])
             dists_in_front = self.abs_to_rel(abs_dists_in_front)
             list_of_rows.append(dists_in_front)
 
@@ -79,6 +84,14 @@ class DotDrawer(object):
                 Sequence.add(
                     'Draw Row %d' % i,
                     DrawRow(dists_in_front),
+                    transitions={ 
+                        'Aborted': 'Aborted'
+                    }
+                )
+                # Return back to the beginning of row      
+                Sequence.add(
+                    'Go Back %d' % i,
+                    GoForward(-1 * dists_back[i]),
                     transitions={ 
                         'Aborted': 'Aborted'
                     }
