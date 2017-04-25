@@ -32,6 +32,7 @@ class DotDrawer(object):
 
         # create a smach state machine
         sm = smach.StateMachine(outcomes=['give_up'])
+        sm.userdata.dist_in_front = 1
         with sm:
             smach.StateMachine.add(
                 'Go Forward',
