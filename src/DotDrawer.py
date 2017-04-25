@@ -5,7 +5,7 @@ import smach
 import smach_ros
 
 from smach import Sequence
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, Point
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
 
@@ -32,11 +32,11 @@ class DotDrawer(object):
             firstPoint = list_of_points[index]
             for point in list_of_points[index:]:
                 if point.x != firstPoint.x:
-                    point_rows.append(dists_in_front)
                     break
                 else:
                     index = index + 1
                     dists_in_front.append(point)
+            point_rows.append(dists_in_front)
             row = row + 1
         return point_rows
 
@@ -59,7 +59,6 @@ class DotDrawer(object):
                     }
                 )
 
-        # start the state machine
         return sq.execute()
 
     def run(self):
@@ -67,6 +66,17 @@ class DotDrawer(object):
         waypoints = self.get_waypoints_from_server(Pose())
         return self.draw_points(waypoints)
 
+    def test(self):
+        points = [Point(x=0.0, y=1.0, z=0.0), Point(x=0.0, y=2.0, z=0.0), 
+                  Point(x=1.0, y=1.0, z=0.0), Point(x=1.0, y=3.0, z=0.0)]
+        return self.draw_points(points)
+
 
 if __name__ == '__main__':
-    DotDrawer().run()
+    import sys
+    if len(sys.argv) <= 1:
+        print DotDrawer().run()
+    elif sys.argv[1] == '-test':
+        print DotDrawer().test()
+    else:
+        print DotDrawer().run()

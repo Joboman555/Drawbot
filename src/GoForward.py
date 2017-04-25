@@ -77,7 +77,7 @@ class GoForward(smach.State):
 
         while not rospy.is_shutdown() and self.got_first_odom_msg and not self.stopped:
             distance_from_goal = distance - self.distance_to(move_starting_position)
-            print 'Distance to goal: ', str(distance_from_goal)
+            print 'Distance to go: (%f / %f)' % (self.dist_in_front, distance_from_goal)
             if distance_from_goal > 0.001:
                 fwd_msg = Twist(linear=Vector3(distance_from_goal, 0.0, 0.0))
                 self.publisher.publish(fwd_msg)
