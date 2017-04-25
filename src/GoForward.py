@@ -13,9 +13,8 @@ import rospy
 
 class GoForward(smach.State):
 
-    def __init__(self, dist_in_front, 
-                       outcomes=['Completed_Successfully', 'Aborted']):
-        super(GoForward, self).__init__(outcomes=outcomes)
+    def __init__(self, dist_in_front):
+        super(GoForward, self).__init__(outcomes=['Completed_Successfully','Aborted'])
 
         self.dist_in_front = dist_in_front
         self.position = None
@@ -91,10 +90,8 @@ class GoForward(smach.State):
     def execute(self, userdata):
         return self.run()
 
-
     def run(self):
         r = rospy.Rate(50)
-
         # Wait for the first odometry position update to come in
         while not self.got_first_odom_msg:
             r.sleep()
