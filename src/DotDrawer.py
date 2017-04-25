@@ -8,6 +8,7 @@ from smach import Sequence
 from geometry_msgs.msg import Pose, Point
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
+from CarriageReturn import CarriageReturn
 from operator import sub
 
 class DotDrawer(object):
@@ -57,14 +58,35 @@ class DotDrawer(object):
         rows = self.extract_rows(waypoints)
         sq = Sequence(outcomes=['Completed_Successfully', 'Aborted'],
                       connector_outcome='Completed_Successfully')
+        
+        list_of_rows = []
+        for row in rows:
+            abs_dists_in_front = [point.y for point in row]
+            dists_in_front = self.abs_to_rel(abs_dists_in_front)
+            list_of_rows.append(dists_in_front)
+
+        # assume all lines are spaced equally, and that lines are 
+        # seperated perfectly on the x axis
+        line_spacing = abs(rows[0][0].x - rows[1][0].x)
+        print 'Line Spacing: %f' % line_spacing
+        
         with sq:
             for i, row in enumerate(rows):
                 print 'Added row ' + str(i) + ' to State Machine'
-                abs_dists_in_front = [point.y for point in row]
-                dists_in_front = self.abs_to_rel(abs_dists_in_front)       
+                dists_in_front = list_of_rows[i]
+
+                # Draw a Row       
                 Sequence.add(
                     'Draw Row %d' % i,
                     DrawRow(dists_in_front),
+                    transitions={ 
+                        'Aborted': 'Aborted'
+                    }
+                )
+                # Go to the next line
+                Sequence.add(
+                    'Carriage Return %d' % i,
+                    CarriageReturn(line_spacing),
                     transitions={ 
                         'Aborted': 'Aborted'
                     }

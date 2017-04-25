@@ -15,7 +15,7 @@ class Sleep(smach.State):
 
     def run(self):
         try:
-            rospy.sleep(5)
+            rospy.sleep(0.1)
         except:
             return 'Aborted'
         else:
