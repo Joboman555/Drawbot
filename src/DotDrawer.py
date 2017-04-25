@@ -88,22 +88,24 @@ class DotDrawer(object):
                         'Aborted': 'Aborted'
                     }
                 )
-                # Return back to the beginning of row      
-                Sequence.add(
-                    'Go Back %d' % i,
-                    GoForward(-1 * dists_back[i]),
-                    transitions={ 
-                        'Aborted': 'Aborted'
-                    }
-                )
-                # Go to the next line
-                Sequence.add(
-                    'Carriage Return %d' % i,
-                    CarriageReturn(line_spacing),
-                    transitions={ 
-                        'Aborted': 'Aborted'
-                    }
-                )
+                # If we're on the last line, no need to return
+                if i < len(rows) - 1:
+                    # Return back to the beginning of row      
+                    Sequence.add(
+                        'Go Back %d' % i,
+                        GoForward(-1 * dists_back[i]),
+                        transitions={ 
+                            'Aborted': 'Aborted'
+                        }
+                    )
+                    # Go to the next line
+                    Sequence.add(
+                        'Carriage Return %d' % i,
+                        CarriageReturn(line_spacing),
+                        transitions={ 
+                            'Aborted': 'Aborted'
+                        }
+                    )
 
         return sq.execute()
 
