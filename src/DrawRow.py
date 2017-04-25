@@ -13,7 +13,6 @@ class DrawRow(smach.State):
                        outcomes=['Completed_Successfully', 'Aborted']):
         smach.State.__init__(self, outcomes=outcomes)
         self.dists_in_front = dists_in_front
-        
 
     def execute(self, userdata):
         return self.run()
@@ -23,18 +22,19 @@ class DrawRow(smach.State):
         sq = Sequence(outcomes=['Completed_Successfully', 'Aborted'],
                       connector_outcome='Completed_Successfully')
         with sq:
-            Sequence.add(
-                'Go Forward', GoForward(self.dists_in_front[0]), transitions={'Aborted': 'Aborted'}
-            )
-
-            Sequence.add(
-                'Sleep', Sleep(), transitions={'Aborted': 'Aborted'}
-            )
+            for i, dist in enumerate(self.dists_in_front):
+                go_fwd_lbl = 'Go Forward %d' % i
+                sleep_lbl = 'Sleep %d' % i
+                Sequence.add(
+                    go_fwd_lbl, GoForward(dist), transitions={'Aborted': 'Aborted'}
+                )
+                Sequence.add(
+                    sleep_lbl, Sleep(), transitions={'Aborted': 'Aborted'}
+                )
         # start the state machine
         return sq.execute()
 
 
-
 if __name__ == '__main__':
     rospy.init_node('DrawRow')
-    DrawRow([1.0, 1.0]).run()
+    DrawRow([1.0, 0.5]).run()
