@@ -4,9 +4,7 @@ import rospy
 import smach
 import smach_ros
 
-from GoForward import GoForward
-from Turn import Turn
-from Sleep import Sleep
+from smach import Sequence
 from geometry_msgs.msg import Pose
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
@@ -15,9 +13,6 @@ class DotDrawer(object):
     def __init__(self):
         super(DotDrawer, self).__init__()
         rospy.init_node('DotDrawer')
-        rospy.wait_for_service('get_waypoints')
-        self.waypoints = self.get_waypoints_from_server(Pose())
-        print self.waypoints[0]
 
     def get_waypoints_from_server(self, pose):
         try:
@@ -27,24 +22,50 @@ class DotDrawer(object):
         except rospy.ServiceException, e:
             print "Service call failed %s" % e
 
+    def extract_rows(self, list_of_points):
+        """Extracts each row from the list of points"""
+        index = 0
+        row = 0
+        point_rows = []
+        while index < len(list_of_points):
+            dists_in_front = []
+            firstPoint = list_of_points[index]
+            for point in list_of_points[index:]:
+                if point.x != firstPoint.x:
+                    point_rows.append(dists_in_front)
+                    break
+                else:
+                    index = index + 1
+                    dists_in_front.append(point)
+            row = row + 1
+        return point_rows
 
-    def run(self):
-
-        # create a smach state machine
-        sm = smach.StateMachine(outcomes=['give_up'])
-        with sm:
-            smach.StateMachine.add(
-                'Draw Row',
-                DrawRow([1.0, 0.5]),
-                transitions={ 
-                # define the transitions that GoForward can go through to other states
-                    'Completed_Successfully': 'Draw Row',
-                    'Aborted': 'give_up'
-                }
-            )
+    def draw_points(self, waypoints):
+        """ Draws the given waypoints.
+            waypoints : a list of point objects with x, y, and z fields.
+        """
+        rows = self.extract_rows(waypoints)
+        sq = Sequence(outcomes=['Completed_Successfully', 'Aborted'],
+                      connector_outcome='Completed_Successfully')
+        with sq:
+            for i, row in enumerate(rows):
+                print 'Added row ' + str(i) + ' to State Machine'
+                dists_in_front = [point.y for point in row]            
+                Sequence.add(
+                    'Draw Row %d' % i,
+                    DrawRow(dists_in_front),
+                    transitions={ 
+                        'Aborted': 'Aborted'
+                    }
+                )
 
         # start the state machine
-        return sm.execute()
+        return sq.execute()
+
+    def run(self):
+        rospy.wait_for_service('get_waypoints')
+        waypoints = self.get_waypoints_from_server(Pose())
+        return self.draw_points(waypoints)
 
 
 if __name__ == '__main__':
