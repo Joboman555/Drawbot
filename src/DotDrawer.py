@@ -30,14 +30,12 @@ class DotDrawer(object):
 
     def run(self):
 
-
         # create a smach state machine
         sm = smach.StateMachine(outcomes=['give_up'])
-        sm.userdata.dists_in_front = [1.0, 1.0]
         with sm:
             smach.StateMachine.add(
                 'Draw Row',
-                DrawRow(),
+                DrawRow([1.0, 0.5]),
                 transitions={ 
                 # define the transitions that GoForward can go through to other states
                     'Completed_Successfully': 'Draw Row',
