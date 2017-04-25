@@ -22,10 +22,9 @@ class DrawRow(smach.State):
         # create a smach state machine
         sq = Sequence(outcomes=['Completed_Successfully', 'Aborted'],
                       connector_outcome='Completed_Successfully')
-        sq.userdata.dist_in_front = dists_in_front[0]
         with sq:
             Sequence.add(
-                'Go Forward', GoForward(), transitions={'Aborted': 'Aborted'}
+                'Go Forward', GoForward(dists_in_front[0]), transitions={'Aborted': 'Aborted'}
             )
 
             Sequence.add(
