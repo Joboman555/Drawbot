@@ -3,6 +3,7 @@
 import rospy
 import smach
 import smach_ros
+from smach import Sequence
 
 from GoForward import GoForward
 from Sleep import Sleep
@@ -19,29 +20,19 @@ class DrawRow(smach.State):
 
     def run(self, dists_in_front = [1.0, 1.0]):
         # create a smach state machine
-        sm = smach.StateMachine(outcomes=['Completed_Successfully', 'Aborted'])
-        sm.userdata.dist_in_front = dists_in_front[0]
-        with sm:
-            smach.StateMachine.add(
-                'Go Forward',
-                GoForward(),
-                transitions={ 
-                # define the transitions that GoForward can go through to other states
-                    'Completed_Successfully': 'Sleep',
-                    'Aborted': 'Aborted'
-                }
+        sq = Sequence(outcomes=['Completed_Successfully', 'Aborted'],
+                      connector_outcome='Completed_Successfully')
+        sq.userdata.dist_in_front = dists_in_front[0]
+        with sq:
+            Sequence.add(
+                'Go Forward', GoForward(), transitions={'Aborted': 'Aborted'}
             )
 
-            smach.StateMachine.add(
-                'Sleep',
-                Sleep(),
-                transitions={
-                    'Completed_Successfully': 'Completed_Successfully',
-                    'Aborted': 'Aborted'
-                }
+            Sequence.add(
+                'Sleep', Sleep(), transitions={'Aborted': 'Aborted'}
             )
         # start the state machine
-        return sm.execute()
+        return sq.execute()
 
 
 
