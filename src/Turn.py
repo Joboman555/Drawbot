@@ -12,10 +12,9 @@ import smach
 import rospy
 
 class Turn(smach.State):
-
-    def __init__(self, outcomes=['Completed_Successfully', 'Aborted']):
-        super(Turn, self).__init__(outcomes=outcomes)
-
+    def __init__(self, goal_angle):
+        super(Turn, self).__init__(outcomes=['Completed_Successfully', 'Aborted'])
+        self.goal_angle = goal_angle
         self.orientation = None
 
         self.got_first_odom_msg = False
@@ -80,7 +79,7 @@ class Turn(smach.State):
         while not self.got_first_odom_msg:
             r.sleep()
 
-        success = self.rotate(-math.pi / 2.0)
+        success = self.rotate(self.goal_angle)
         if success:
             return 'Completed_Successfully'
         else:
@@ -88,4 +87,4 @@ class Turn(smach.State):
 
 if __name__ == '__main__':
     rospy.init_node('Turn')
-    Turn().run()
+    Turn(-math.pi/2).run()
