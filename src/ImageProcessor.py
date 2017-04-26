@@ -15,7 +15,7 @@ class ImageProcessor(object):
     def __init__(self, path):
         super(ImageProcessor, self).__init__() 
         rospy.init_node('ImageProcessorServer')
-        self.IMAGE = self.preprocess(path, final_size=(5, 5))
+        self.IMAGE = self.preprocess(path, final_size=(8, 8))
         s = rospy.Service('get_waypoints', GetWaypoints, self.handle_get_waypoints)
         print "Ready to give waypoints"
         print self.IMAGE
@@ -53,7 +53,7 @@ class ImageProcessor(object):
 
     def handle_get_waypoints(self, req):
         print "Got request for position [%s]" % (req.neatoPosition)
-        points = self.generate_points(self.IMAGE, (3,3))
+        points = self.generate_points(self.IMAGE, (.5,.5))
         return GetWaypointsResponse(points)
 
 if __name__ == '__main__':
