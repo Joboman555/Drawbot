@@ -26,15 +26,6 @@ def main():
         )
 
         smach.StateMachine.add(
-            'Sleep',
-            Sleep(),
-            transitions={
-                'Completed_Successfully': 'Go Forward',
-                'Aborted': 'give_up'
-            }
-        )
-
-        smach.StateMachine.add(
             'Draw',
             Draw(),
             transitions={

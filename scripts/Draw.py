@@ -18,12 +18,13 @@ class Draw(smach.State):
     def run(self):
         r = rospy.Rate(4)
 
-        while not rospy.is_shutdown():
-            self.pub.publish(Byte(data=60))
+        for i in range(3):
+            self.pub.publish(Byte(data=65))
             r.sleep()
-            self.pub.publish(Byte(data=68))
+        for i in range(3):
+            self.pub.publish(Byte(data=80))
             r.sleep()
-            r.sleep()
+        return 'Completed_Successfully'
 
 if __name__ == '__main__':
     rospy.init_node('Draw')

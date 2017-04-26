@@ -81,6 +81,7 @@ class GoForward(smach.State):
             if distance_from_goal > 0.001:
                 fwd_msg = Twist(linear=Vector3(distance_from_goal, 0.0, 0.0))
                 self.publisher.publish(fwd_msg)
+                print "going"
             else:
                 self.stop()
                 return True
