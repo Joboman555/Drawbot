@@ -13,9 +13,10 @@ import rospy
 
 class GoForward(smach.State):
 
-    def __init__(self, outcomes=['Completed_Successfully', 'Aborted']):
-        super(GoForward, self).__init__(outcomes=outcomes)
+    def __init__(self, dist_in_front):
+        super(GoForward, self).__init__(outcomes=['Completed_Successfully','Aborted'])
 
+        self.dist_in_front = dist_in_front
         self.position = None
 
         self.starting_position = None
@@ -61,7 +62,6 @@ class GoForward(smach.State):
             self.starting_position = np.array([pos.x, pos.y, pos.z])
         current_pos = msg.pose.pose.position
         self.position = np.array([current_pos.x, current_pos.y, current_pos.z])
-        print 'Got Odom'
         if not self.got_first_odom_msg:
             self.got_first_odom_msg = True
 
@@ -76,10 +76,10 @@ class GoForward(smach.State):
         self.publish_destination(destination[0], destination[1], destination[2])
 
         while not rospy.is_shutdown() and self.got_first_odom_msg and not self.stopped:
-            distance_from_goal = distance - self.distance_to(move_starting_position)
-            print distance_from_goal
+            distance_from_goal = abs(distance) - self.distance_to(move_starting_position)
+            print 'Distance to go: (%f / %f)' % (self.dist_in_front, distance_from_goal)
             if distance_from_goal > 0.001:
-                fwd_msg = Twist(linear=Vector3(distance_from_goal, 0.0, 0.0))
+                fwd_msg = Twist(linear=Vector3(np.sign(distance)*distance_from_goal, 0.0, 0.0))
                 self.publisher.publish(fwd_msg)
                 print "going"
             else:
@@ -93,12 +93,11 @@ class GoForward(smach.State):
 
     def run(self):
         r = rospy.Rate(50)
-
         # Wait for the first odometry position update to come in
         while not self.got_first_odom_msg:
             r.sleep()
 
-        success = self.go_forward(distance=0.0254)
+        success = self.go_forward(self.dist_in_front)
         if not success:
             return 'Aborted'
 
@@ -106,4 +105,4 @@ class GoForward(smach.State):
 
 if __name__ == '__main__':
     rospy.init_node('GoForward')
-    GoForward().run()
+    GoForward(-1.0).run()
