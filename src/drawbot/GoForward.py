@@ -30,11 +30,9 @@ class GoForward(smach.State):
 
         self.destination_publisher = rospy.Publisher('/destination', PointStamped, queue_size=10)
         # The destination publisher will drop the first message if we don't wait a bit.
-        rospy.sleep(1.0)
         rospy.on_shutdown(self.stop)
 
     def publish_destination(self, x, y, z):
-        print 'Publishing destination (%d,%d,%d)' % (x, y, z)
         self.destination_publisher.publish(
             PointStamped(
                 header=Header(stamp=rospy.Time.now(), frame_id='base_link'),
@@ -70,14 +68,17 @@ class GoForward(smach.State):
 
     def go_forward(self, distance=1.0):
         r = rospy.Rate(50)
-        destination = np.array([distance, 0.0, 0.0])
-
         move_starting_position = self.position
-        self.publish_destination(destination[0], destination[1], destination[2])
 
         while not rospy.is_shutdown() and self.got_first_odom_msg and not self.stopped:
+            
+            
             distance_from_goal = abs(distance) - self.distance_to(move_starting_position)
             print 'Distance to go: (%f / %f)' % (self.dist_in_front, distance_from_goal)
+
+            destination = np.array([np.sign(distance) * distance_from_goal, 0.0, 0.0])
+            self.publish_destination(destination[0], destination[1], destination[2])
+            
             if distance_from_goal > 0.001:
                 fwd_msg = Twist(linear=Vector3(np.sign(distance)*distance_from_goal, 0.0, 0.0))
                 self.publisher.publish(fwd_msg)
