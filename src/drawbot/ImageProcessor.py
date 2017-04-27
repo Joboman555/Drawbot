@@ -20,7 +20,7 @@ class ImageProcessor(object):
         rospy.init_node('ImageProcessorServer')
 
         self.starting_position = None
-        self.starting_orientation = None
+        self.starting_angle = None
         self.got_first_odom_msg = False
 
         rospy.Subscriber('/odom', Odometry, self.update_odometry)
@@ -34,7 +34,7 @@ class ImageProcessor(object):
         self.bl_coords = self.generate_base_link_points(IMAGE, (0.5,0.5))
         self.odom_coords = self.generate_odom_points(IMAGE, (0.5,0.5))
         print self.starting_position
-        print self.starting_orientation
+        print self.starting_angle
         rospy.spin()
 
     def update_odometry(self, msg):
@@ -43,8 +43,9 @@ class ImageProcessor(object):
             self.starting_position = np.array([pos.x, pos.y, pos.z])
             
             current_quat = msg.pose.pose.orientation
-            self.starting_orientation = self.convert_to_euler(current_quat.x, current_quat.y, current_quat.z, current_quat.w)
-            
+            starting_orientation = self.convert_to_euler(current_quat.x, current_quat.y, current_quat.z, current_quat.w)
+            self.starting_angle = -starting_orientation[2]
+
             self.got_first_odom_msg = True
 
     def convert_to_euler(self, x, y, z, w):
@@ -99,9 +100,17 @@ class ImageProcessor(object):
         points_coords = np.hstack((scaled_x_y_coords, zs))
         return points_coords
 
+    def transform_to_odom(self, points_base_link, theta, position):
+        rot = np.matrix([[np.cos(theta), -1*np.sin(theta), 0],
+                        [np.sin(theta) ,    np.cos(theta), 0], 
+                        [0             ,  0              , 1]])
+        # Should this be position or starting position?
+        destination_odom = np.matrix(points_base_link) * rot + position
+        return np.array(destination_odom)
+
     def generate_odom_points(self, binary_image, (x_scale, y_scale)):
         points_coords = self.generate_base_link_points(binary_image, (x_scale, y_scale))
-        points_coords_transformed = points_coords + self.starting_position
+        points_coords_transformed = self.transform_to_odom(points_coords, self.starting_angle, self.starting_position)
         return points_coords_transformed
 
     def generate_waypoints(self, odom_points, base_link_points):
