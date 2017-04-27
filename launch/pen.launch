@@ -1,0 +1,6 @@
+<launch>
+  <arg name="host"/>
+  <node name="neato" pkg="drawbot" type="pen" output="screen">
+    <param name="host" value="$(arg host)" />
+  </node>
+</launch>
