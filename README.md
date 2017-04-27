@@ -28,3 +28,8 @@ Once the pen node was developed, we were able to do a quick test of our system d
 
 In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.
 
+# Drawbot Story 2
+
+# Pen Holder
+
+# Our Second Test
