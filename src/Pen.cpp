@@ -8,7 +8,7 @@ int main(int argc, char** argv){
 	ros::NodeHandle n;
 	ros::Subscriber sub = n.subscribe("/pen", 1000, penCallback);
 	std::string address;
-	if(!n.getParam("host", address)){
+	if(!n.getParam("neato/host", address)){
 		ROS_FATAL("Host not set");
 		return 1;
 	}
