@@ -8,9 +8,11 @@ from smach import Sequence
 from geometry_msgs.msg import Pose, Point
 from drawbot.srv import GetWaypoints
 from DrawRow import DrawRow
+from Turn import Turn
 from GoForward import GoForward
 from CarriageReturn import CarriageReturn
 from operator import sub
+import math
 
 class DotDrawer(object):
     def __init__(self):
@@ -76,6 +78,15 @@ class DotDrawer(object):
         print 'Line Spacing: %f' % line_spacing
         
         with sq:
+            # Turn to the left initially to start things off.
+            Sequence.add(
+                'Initial Turn',
+                Turn(-1 * math.pi/2),
+                transitions={ 
+                    'Aborted': 'Aborted'
+                }
+            )
+
             for i, row in enumerate(rows):
                 print 'Added row ' + str(i) + ' to State Machine'
                 dists_in_front = list_of_rows[i]
