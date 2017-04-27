@@ -22,7 +22,7 @@ class DotVisualizer(object):
         try:
             get_waypoints = rospy.ServiceProxy('get_waypoints', GetWaypoints)
             response = get_waypoints()
-            return response.points
+            return response.waypoints
         except rospy.ServiceException, e:
             print "Service call failed %s" % e
 
@@ -41,7 +41,8 @@ class DotVisualizer(object):
         return marker
 
     def publish_visualization(self):
-        markers = self.generate_markers(self.waypoints)
+        points = [waypoint.location_odom for waypoint in self.waypoints]
+        markers = self.generate_markers(points)
         self.publisher.publish(markers)
 
     def run(self):

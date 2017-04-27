@@ -21,24 +21,24 @@ class DotDrawer(object):
         try:
             get_waypoints = rospy.ServiceProxy('get_waypoints', GetWaypoints)
             response = get_waypoints()
-            return response.points
+            return response.waypoints
         except rospy.ServiceException, e:
             print "Service call failed %s" % e
 
-    def extract_rows(self, list_of_points):
-        """Extracts each row from the list of points"""
+    def extract_rows(self, waypoints):
+        """Extracts each row from the list of waypoints"""
         index = 0
         row = 0
         point_rows = []
-        while index < len(list_of_points):
+        while index < len(waypoints):
             dists_in_front = []
-            firstPoint = list_of_points[index]
-            for point in list_of_points[index:]:
-                if point.x != firstPoint.x:
+            firstPoint = waypoints[index]
+            for point in waypoints[index:]:
+                if point.location_base_link.x != firstPoint.location_base_link.x:
                     break
                 else:
                     index = index + 1
-                    dists_in_front.append(point)
+                    dists_in_front.append(point.location_base_link)
             point_rows.append(dists_in_front)
             row = row + 1
         return point_rows

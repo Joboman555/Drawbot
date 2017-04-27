@@ -6,6 +6,7 @@ from __future__ import division
 import rospy
 import cv2
 from geometry_msgs.msg import Point
+from drawbot.msg import Waypoint
 from nav_msgs.msg import Odometry
 from drawbot.srv import GetWaypoints, GetWaypointsResponse
 import numpy as np
@@ -71,6 +72,24 @@ class ImageProcessor(object):
         scaled = coords * np.array([x_scale, y_scale]) / maxs
         return scaled
 
+    # def extract_rows(self, list_of_points):
+    #     """Extracts each row from the list of points"""
+    #     index = 0
+    #     row = 0
+    #     point_rows = []
+    #     while index < len(list_of_points):
+    #         dists_in_front = []
+    #         firstPoint = list_of_points[index]
+    #         for point in list_of_points[index:]:
+    #             if point.x != firstPoint.x:
+    #                 break
+    #             else:
+    #                 index = index + 1
+    #                 dists_in_front.append(point)
+    #         point_rows.append(dists_in_front)
+    #         row = row + 1
+    #     return point_rows
+
     def generate_base_link_points(self, binary_image, (x_scale, y_scale)):
         # Finds coordinates where the image is not 0
         x_y_coords = np.argwhere(binary_image).astype(float)
@@ -85,22 +104,35 @@ class ImageProcessor(object):
         points_coords_transformed = points_coords + self.starting_position
         return points_coords_transformed
 
-    def array_to_points(self, arr):
-        """Converts a nx3 array toa  list of Points."""
+    def generate_waypoints(self, odom_points, base_link_points):
+        """ Creates waypoints from two arrays of points.
+            odom_points: location of waypoints in odom frame.
+            base_link_points: location of waypoitnts in base_link frame."""
         # The second dimension must be 3
-        assert arr.shape[1] == 3
-        points = []
-        for row in arr:
-            point = Point(x=row[0], y=row[1], z=row[2])
-            points.append(point)
-        return points
+        assert odom_points.shape[1] == 3
+        assert base_link_points.shape[1] == 3
+
+        waypoints = []
+        current_id = 0
+        row = 0
+        for array_row in np.hstack((odom_points, base_link_points)):
+            col = 0
+            odom_point = Point(x=array_row[0], y=array_row[1], z=array_row[2])
+            # THIS IS NOT FINAL - just for testing
+            base_link_point = Point(x=array_row[3], y=array_row[4], z=array_row[5])
+            print 
+            waypoint = Waypoint(id=current_id, row=row, col=col, 
+                location_odom=odom_point, location_base_link=base_link_point)
+            waypoints.append(waypoint)
+            current_id = current_id + 1
+            col = col + 1
+        return waypoints
 
     def handle_get_waypoints(self, req):
         print "Got request for waypoints "
         
-        base_link_points = self.array_to_points(self.bl_coords)
-        odom_points = self.array_to_points(self.odom_coords)
-        return GetWaypointsResponse(odom_points=odom_points, base_link_points=base_link_points)
+        waypoints = self.generate_waypoints(self.odom_coords, self.bl_coords)
+        return GetWaypointsResponse(waypoints)
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
