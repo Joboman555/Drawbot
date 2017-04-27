@@ -5,7 +5,7 @@
 import rospy
 import smach
 from smach import Sequence
-
+from Draw import Draw
 from GoForward import GoForward
 from Sleep import Sleep
 
@@ -30,7 +30,7 @@ class DrawRow(smach.State):
                     go_fwd_lbl, GoForward(dist), transitions={'Aborted': 'Aborted'}
                 )
                 Sequence.add(
-                    sleep_lbl, Sleep(), transitions={'Aborted': 'Aborted'}
+                    sleep_lbl, Draw(), transitions={'Aborted': 'Aborted'}
                 )
         # start the state machine
         return sq.execute()

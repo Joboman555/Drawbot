@@ -22,7 +22,7 @@ class Draw(smach.State):
             self.pub.publish(Byte(data=65))
             r.sleep()
         for i in range(3):
-            self.pub.publish(Byte(data=80))
+            self.pub.publish(Byte(data=90))
             r.sleep()
         return 'Completed_Successfully'
 
