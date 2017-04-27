@@ -60,7 +60,7 @@ class Turn(smach.State):
         while not rospy.is_shutdown() and self.got_first_odom_msg:
             delta = self.delta_angle(self.get_angle(), final_angle)
             if abs(delta) >= math.pi / 500.0:
-                turn_msg = Twist(angular=Vector3(0.0, 0.0, -delta * 1.0))
+                turn_msg = Twist(angular=Vector3(0.0, 0.0, -delta * 0.9))
                 self.publisher.publish(turn_msg)
             else:
                 self.stop()
