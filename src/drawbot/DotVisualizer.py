@@ -5,7 +5,7 @@
 from __future__ import division
 import rospy
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Vector3, Pose
+from geometry_msgs.msg import Vector3
 from std_msgs.msg import Header, ColorRGBA
 from drawbot.srv import GetWaypoints
 
@@ -15,10 +15,10 @@ class DotVisualizer(object):
         super(DotVisualizer, self).__init__()
         self.publisher = rospy.Publisher('/dots', Marker, queue_size=10)
         rospy.wait_for_service('get_waypoints')
-        self.waypoints = self.get_waypoints_from_server(Pose())
+        self.waypoints = self.get_waypoints_from_server()
         print self.waypoints
 
-    def get_waypoints_from_server(self, pose):
+    def get_waypoints_from_server(self):
         try:
             get_waypoints = rospy.ServiceProxy('get_waypoints', GetWaypoints)
             response = get_waypoints()

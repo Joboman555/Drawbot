@@ -96,11 +96,11 @@ class ImageProcessor(object):
         return points
 
     def handle_get_waypoints(self, req):
-        print "Got request for position [%s]" % (req.neatoPosition)
+        print "Got request for waypoints "
         
         base_link_points = self.array_to_points(self.bl_coords)
         odom_points = self.array_to_points(self.odom_coords)
-        return GetWaypointsResponse(odom_points)
+        return GetWaypointsResponse(odom_points=odom_points, base_link_points=base_link_points)
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:

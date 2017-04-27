@@ -17,7 +17,7 @@ class DotDrawer(object):
         super(DotDrawer, self).__init__()
         rospy.init_node('DotDrawer')
 
-    def get_waypoints_from_server(self, pose):
+    def get_waypoints_from_server(self):
         try:
             get_waypoints = rospy.ServiceProxy('get_waypoints', GetWaypoints)
             response = get_waypoints()
@@ -111,7 +111,7 @@ class DotDrawer(object):
 
     def run(self):
         rospy.wait_for_service('get_waypoints')
-        waypoints = self.get_waypoints_from_server(Pose())
+        waypoints = self.get_waypoints_from_server()
         return self.draw_points(waypoints)
 
     def test(self):
