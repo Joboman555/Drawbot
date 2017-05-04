@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<!--
+	Fractal by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Drawbot</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+	</head>
+	<body id="top">
+
+		<!-- Header -->
+			<header id="header">
+				<div class="content">
+					<div style="width:1920px;padding:15px;background-color:rgba(67, 74, 86, 0.75);line-height:1.4;text-align: center;">
+						<h1>Drawbot</h1>
+						<p>A Neato robot that draws pixel art instead of cleaning</p>
+						<ul class="actions">
+							<li><a href="https://github.com/Joboman555/Drawbot" class="button special icon fa-github">Github</a></li>
+							<li><a href="index.html" class="button special icon fa-file-text">Documentation</a></li>
+							<li><a href="#one" class="button icon fa-chevron-down scrolly">Learn More</a></li>
+						</ul>
+					</div>
+				</div>
+			</header>
+
+		<!-- One -->
+			<section id="one" class="wrapper style2 special">
+				<header class="major">
+					<h2>Our project idea is modifying the neato so that it can draw images using dots. <br />
+					This spans the range of low level (creating a pen actuator node on the neato)<br />
+					to high level (path planning and precise odometry).</h2>
+				</header>
+			</section>
+
+		<!-- Two -->
+			<section id="two" class="wrapper">
+				<div class="inner alt">
+					<header class="major">
+						<h2>Story 1</h2>
+					</header>
+
+					<section class="spotlight">
+						<div class="image"><img src="images/heart_dots.png" alt="" /></div>
+						<div class="content">
+							<h3>Dot Visualizer</h3>
+							<p>Good visualizations have been really important so far in developing and debugging projects in this class. We decided to create a Dot Visualizer to accomplish this. This visualizer takes an image, and publishes the location of the dots that the neato will need to draw and publishes that to rviz.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
+						<div class="content">
+							<h3>Pen Node</h3>
+							<p>The pen node takes in a byte message that corresponds to the angle of the servo connected to the pen. It sends the message to a udp server that is running on the raspberry pi. The raspberry pi then sends that byte to the arduino over serial.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/dry_run.gif" alt="" /></div>
+						<div class="content">
+							<h3>Our First Test</h3>
+							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
+						<div class="content">
+							<h3>Moving Forward</h3>
+							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
+						</div>
+				</div>
+			</section>
+
+		<!-- Three -->
+			<section id="three" class="wrapper">
+				<div class="inner alt">
+					<header class="major">
+						<h2>Story 2</h2>
+					</header>
+
+					<section class="spotlight">
+						<div class="image"><img src="images/PenHolder.png" alt="" /></div>
+						<div class="content">
+							<h3>Pen Holder</h3>
+							<p>Since last time, we decided to design and fabricate a new pen holder. This new pen holder constrains the pen to vertical movement, reducing any streaking when the pen moves up and down. It also uses a smaller servo that requires less power than the larger servo we were previously using.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
+						<div class="content">
+							<h3>Architecture Changes</h3>
+							<p>In addition to changing how the pen worked, we also edited our architecture in some interesting ways. Previously, the only information that was being sent was a list of point values that the robot should visit. Moving from 1D to a 2D image, however, required more information. This required creating a custom message type called Waypoint, which encapsulates a point's global position, position relative to the neato, an id, and its row and column.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/output.gif" alt="" /></div>
+						<div class="content">
+							<h3>Moving Forward</h3>
+							<p>Moving forward, we plan on fixing a serial error with the arduino and the neato. We also plan on making the pen server run on startup of the raspberry pi. As a stretch goal, we hope to incorperate another means odometry (most likely AprilTags) to reduce the cumulative error of moving/turning.</p>
+						</div>
+					</section>
+				</div>
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<p class="copyright">&copy; <a href="https://github.com/cmoser96">Carl Moser</a> & <a href="https://github.com/Joboman555">Jonah Spear.</a> Credits: <a href="http://html5up.net">HTML5 UP</a></p>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

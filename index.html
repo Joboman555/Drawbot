@@ -24,6 +24,7 @@
 						<p>A Neato robot that draws pixel art instead of cleaning</p>
 						<ul class="actions">
 							<li><a href="https://github.com/Joboman555/Drawbot" class="button special icon fa-github">Github</a></li>
+							<li><a href="stories.html" class="button special icon fa-book">Blog</a></li>
 							<li><a href="#one" class="button icon fa-chevron-down scrolly">Learn More</a></li>
 						</ul>
 					</div>
@@ -45,50 +46,75 @@
 		<!-- Two -->
 			<section id="two" class="wrapper">
 				<div class="inner alt">
+					<header class="major">
+						<h2>Story 1</h2>
+					</header>
+
 					<section class="spotlight">
-						<div class="image"><img src="images/pic01.jpg" alt="" /></div>
+						<div class="image"><img src="images/heart_dots.png" alt="" /></div>
 						<div class="content">
-							<h3>Magna sed ultrices</h3>
-							<p>Morbi mattis ornare ornare. Duis quam turpis, gravida at leo elementum elit fusce accumsan dui libero, quis vehicula lectus ultricies eu. In convallis amet leo non sapien iaculis efficitur consequat lorem ipsum.</p>
+							<h3>Dot Visualizer</h3>
+							<p>Good visualizations have been really important so far in developing and debugging projects in this class. We decided to create a Dot Visualizer to accomplish this. This visualizer takes an image, and publishes the location of the dots that the neato will need to draw and publishes that to rviz.</p>
 						</div>
 					</section>
 					<section class="spotlight">
 						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
 						<div class="content">
-							<h3>Ultrices nullam aliquam</h3>
-							<p>Morbi mattis ornare ornare. Duis quam turpis, gravida at leo elementum elit fusce accumsan dui libero, quis vehicula lectus ultricies eu. In convallis amet leo non sapien iaculis efficitur consequat lorem ipsum.</p>
+							<h3>Pen Node</h3>
+							<p>The pen node takes in a byte message that corresponds to the angle of the servo connected to the pen. It sends the message to a udp server that is running on the raspberry pi. The raspberry pi then sends that byte to the arduino over serial.</p>
 						</div>
 					</section>
 					<section class="spotlight">
-						<div class="image"><img src="images/pic03.jpg" alt="" /></div>
+						<div class="image"><img src="images/dry_run.gif" alt="" /></div>
 						<div class="content">
-							<h3>Aliquam sed magna</h3>
-							<p>Morbi mattis ornare ornare. Duis quam turpis, gravida at leo elementum elit fusce accumsan dui libero, quis vehicula lectus ultricies eu. In convallis amet leo non sapien iaculis efficitur consequat lorem ipsum.</p>
+							<h3>Our First Test</h3>
+							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
 						</div>
 					</section>
-					<section class="special">
-						<ul class="icons labeled">
-							<li><span class="icon fa-camera-retro"><span class="label">Ipsum lorem accumsan</span></span></li>
-							<li><span class="icon fa-refresh"><span class="label">Sed vehicula elementum</span></span></li>
-							<li><span class="icon fa-cloud"><span class="label">Elit fusce consequat</span></span></li>
-							<li><span class="icon fa-code"><span class="label">Lorem nullam tempus</span></span></li>
-							<li><span class="icon fa-desktop"><span class="label">Adipiscing amet sapien</span></span></li>
-						</ul>
+					<section class="spotlight">
+						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
+						<div class="content">
+							<h3>Moving Forward</h3>
+							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
+						</div>
 					</section>
+						<div style="text-align: center;">
+							<ul class="actions">
+								<li><a href="#three" class="button icon fa-chevron-down scrolly">Story 2</a></li>
+							</ul>
+						</div>
 				</div>
 			</section>
 
 		<!-- Three -->
-			<section id="three" class="wrapper style2 special">
-				<header class="major">
-					<h2>Magna leo sapien gravida</h2>
-					<p>Gravida at leo elementum elit fusce accumsan dui libero, quis vehicula<br />
-					lectus ultricies eu. In convallis amet leo sapien iaculis efficitur.</p>
-				</header>
-				<ul class="actions">
-					<li><a href="#" class="button special icon fa-download">Download</a></li>
-					<li><a href="#" class="button">Learn More</a></li>
-				</ul>
+			<section id="three" class="wrapper">
+				<div class="inner alt">
+					<header class="major">
+						<h2>Story 2</h2>
+					</header>
+
+					<section class="spotlight">
+						<div class="image"><img src="images/PenHolder.png" alt="" /></div>
+						<div class="content">
+							<h3>Pen Holder</h3>
+							<p>Since last time, we decided to design and fabricate a new pen holder. This new pen holder constrains the pen to vertical movement, reducing any streaking when the pen moves up and down. It also uses a smaller servo that requires less power than the larger servo we were previously using.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
+						<div class="content">
+							<h3>Architecture Changes</h3>
+							<p>In addition to changing how the pen worked, we also edited our architecture in some interesting ways. Previously, the only information that was being sent was a list of point values that the robot should visit. Moving from 1D to a 2D image, however, required more information. This required creating a custom message type called Waypoint, which encapsulates a point's global position, position relative to the neato, an id, and its row and column.</p>
+						</div>
+					</section>
+					<section class="spotlight">
+						<div class="image"><img src="images/output.gif" alt="" /></div>
+						<div class="content">
+							<h3>Moving Forward</h3>
+							<p>Moving forward, we plan on fixing a serial error with the arduino and the neato. We also plan on making the pen server run on startup of the raspberry pi. As a stretch goal, we hope to incorperate another means odometry (most likely AprilTags) to reduce the cumulative error of moving/turning.</p>
+						</div>
+					</section>
+				</div>
 			</section>
 
 		<!-- Four -->
@@ -414,12 +440,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 
 		<!-- Footer -->
 			<footer id="footer">
-				<ul class="icons">
-					<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-					<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-					<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-				</ul>
-				<p class="copyright">&copy; Untitled. Credits: <a href="http://html5up.net">HTML5 UP</a></p>
+				<p class="copyright">&copy; <a href="https://github.com/cmoser96">Carl Moser</a> & <a href="https://github.com/Joboman555">Jonah Spear.</a> Credits: <a href="http://html5up.net">HTML5 UP</a></p>
 			</footer>
 
 		<!-- Scripts -->
