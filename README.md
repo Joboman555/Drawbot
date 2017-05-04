@@ -36,9 +36,13 @@ Since last time, we decided to design and fabricate a new pen holder. This new p
 
 ![New pen holder](PenHolder.png)
 
+# Architecture Changes
+
+In addition to changing how the pen worked, we also edited our architecture in some interesting ways. Previously, the only information that was being sent was a list of point values that the robot should visit. Moving from 1D to a 2D image, however, required more information. This required creating a custom message type called Waypoint, which encapsulates a point's global position, position relative to the neato, an id, and its row and column. 
+
 # Our Second Test
 
-For our second test, we were able to draw an image in 2 dimensions. The image was recognizable from the source image and the visualization in Rviz.
+We have a working prototype! Here is a video of our second test, which shows the robot drawing a heart.
 
 # Moving Forward
 
