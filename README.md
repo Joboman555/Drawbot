@@ -32,4 +32,14 @@ In the coming weeks, we plan on making several changes to packaging that will im
 
 # Pen Holder
 
+Since last time, we decided to design and fabricate a new pen holder. This new pen holder constrains the pen to vertical movement, reducing any streaking when the pen moves up and down. It also uses a smaller servo that requires less power than the larger servo we were previously using.
+
+![New pen holder](PenHolder.png)
+
 # Our Second Test
+
+For our second test, we were able to draw an image in 2 dimensions. The image was recognizable from the source image and the visualization in Rviz.
+
+# Moving Forward
+
+Moving forward, we plan on fixing a serial error with the arduino and the neato. We also plan on making the pen server run on startup of the raspberry pi. As a stretch goal, we hope to incorperate another means odometry (most likely AprilTags) to reduce the cumulative error of moving/turning.
