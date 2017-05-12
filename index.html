@@ -17,11 +17,11 @@
 	<body id="top">
 
 		<!-- Header -->
-			<header id="header">
+			<header id="header" style="background-image: url('images/overlay.png'), url('images/Diagram.png');">
 				<div class="content">
-					<div style="width:1920px;padding:15px;background-color:rgba(67, 74, 86, 0.75);line-height:1.4;text-align: center;">
+					<div style="width:1920px;padding:15px;background-color:rgba(67, 74, 86, 0.95);line-height:1.4;text-align: center;">
 						<h1>Drawbot</h1>
-						<p>A Neato robot that draws pixel art instead of cleaning</p>
+						<p>Documentation for a Neato robot that draws pixel art instead of cleaning</p>
 						<ul class="actions">
 							<li><a href="https://github.com/Joboman555/Drawbot" class="button special icon fa-github">Github</a></li>
 							<li><a href="stories.html" class="button special icon fa-book">Blog</a></li>
@@ -34,92 +34,17 @@
 		<!-- One -->
 			<section id="one" class="wrapper style2 special">
 				<header class="major">
-					<h2>Our project idea is modifying the neato so that it can draw images using dots. <br />
+					<h2>Our project idea takes an image that the user supplies, <br />
 					This spans the range of low level (creating a pen actuator node on the neato)<br />
 					to high level (path planning and precise odometry).</h2>
 				</header>
-					<ul class="actions">
-						<li><a href="#two" class="button icon fa-chevron-down scrolly">Story 1</a></li>
-					</ul>
-			</section>
+				<div class="12u"><span class="image fit"><img src="images/mashup.png" alt="" /></span></div>
 
-		<!-- Two -->
-			<section id="two" class="wrapper">
-				<div class="inner alt">
-					<header class="major">
-						<h2>Story 1</h2>
-					</header>
-
-					<section class="spotlight">
-						<div class="image"><img src="images/heart_dots.png" alt="" /></div>
-						<div class="content">
-							<h3>Dot Visualizer</h3>
-							<p>Good visualizations have been really important so far in developing and debugging projects in this class. We decided to create a Dot Visualizer to accomplish this. This visualizer takes an image, and publishes the location of the dots that the neato will need to draw and publishes that to rviz.</p>
-						</div>
-					</section>
-					<section class="spotlight">
-						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
-						<div class="content">
-							<h3>Pen Node</h3>
-							<p>The pen node takes in a byte message that corresponds to the angle of the servo connected to the pen. It sends the message to a udp server that is running on the raspberry pi. The raspberry pi then sends that byte to the arduino over serial.</p>
-						</div>
-					</section>
-					<section class="spotlight">
-						<div class="image"><img src="images/dry_run.gif" alt="" /></div>
-						<div class="content">
-							<h3>Our First Test</h3>
-							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
-						</div>
-					</section>
-					<section class="spotlight">
-						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
-						<div class="content">
-							<h3>Moving Forward</h3>
-							<p>In the coming weeks, we plan on making several changes to packaging that will improve reliability and overall accuracy of the pen actuator. In parallel, we will also be working on the path planner. We seem to be in a pretty good place with our progress so far, and are excited about the work we have in front of us.</p>
-						</div>
-					</section>
-						<div style="text-align: center;">
-							<ul class="actions">
-								<li><a href="#three" class="button icon fa-chevron-down scrolly">Story 2</a></li>
-							</ul>
-						</div>
-				</div>
-			</section>
-
-		<!-- Three -->
-			<section id="three" class="wrapper">
-				<div class="inner alt">
-					<header class="major">
-						<h2>Story 2</h2>
-					</header>
-
-					<section class="spotlight">
-						<div class="image"><img src="images/PenHolder.png" alt="" /></div>
-						<div class="content">
-							<h3>Pen Holder</h3>
-							<p>Since last time, we decided to design and fabricate a new pen holder. This new pen holder constrains the pen to vertical movement, reducing any streaking when the pen moves up and down. It also uses a smaller servo that requires less power than the larger servo we were previously using.</p>
-						</div>
-					</section>
-					<section class="spotlight">
-						<div class="image"><img src="images/pic02.jpg" alt="" /></div>
-						<div class="content">
-							<h3>Architecture Changes</h3>
-							<p>In addition to changing how the pen worked, we also edited our architecture in some interesting ways. Previously, the only information that was being sent was a list of point values that the robot should visit. Moving from 1D to a 2D image, however, required more information. This required creating a custom message type called Waypoint, which encapsulates a point's global position, position relative to the neato, an id, and its row and column.</p>
-						</div>
-					</section>
-					<section class="spotlight">
-						<div class="image"><img src="images/output.gif" alt="" /></div>
-						<div class="content">
-							<h3>Moving Forward</h3>
-							<p>Moving forward, we plan on fixing a serial error with the arduino and the neato. We also plan on making the pen server run on startup of the raspberry pi. As a stretch goal, we hope to incorperate another means odometry (most likely AprilTags) to reduce the cumulative error of moving/turning.</p>
-						</div>
-					</section>
-				</div>
 			</section>
 
 		<!-- Four -->
 		
-			<section id="four" class="wrapper">
+			<section id="two" class="wrapper">
 				<div class="inner">
 
 					<header class="major">
